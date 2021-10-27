@@ -23,7 +23,7 @@ const upload = multer({ dest: path.join(__dirname, 'uploads') });
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
-dotenv.config({ path: '.env.example' });
+dotenv.config({ path: '.env' });
 
 /**
  * Controllers (route handlers).
@@ -50,7 +50,10 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology', true);
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI, 
+  {  
+    dbName: process.env.MONGODB_DATABASE
+  });
 mongoose.connection.on('error', (err) => {
   console.error(err);
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
@@ -80,6 +83,7 @@ app.use(session({
   store: new MongoStore({
     url: process.env.MONGODB_URI,
     autoReconnect: true,
+    dbName: process.env.MONGODB_DATABASE
   })
 }));
 app.use(passport.initialize());
@@ -125,6 +129,9 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
  * Primary app routes.
  */
 app.get('/', homeController.index);
+app.get('/AboutUs', homeController.AboutUs);
+app.get('/TermsOfUse', homeController.TermsOfUse);
+app.get('/PrivacyPolicies', homeController.PrivacyPolicies);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
