@@ -1,0 +1,36 @@
+extends ../layout
+
+block content
+    .pb-2.mt-2.mb-4.border-bottom
+        h3 Four Steps Explained
+    br
+    .row 
+        .col-12 
+            h4 Start Here:
+
+    form(method='POST')
+        input(type='hidden', name='_csrf', value=_csrf)
+        .form-group.row
+            label.col-md-3.col-form-label.font-weight-bold.text-right(for='GradeLevel') GradeLevel
+            .col-md-7
+                select.form-control(id="GradeLevel", name="GradeLevel")
+                    each gradeLevel in gradeLevels
+                        option(value=gradeLevel.id) #{gradeLevel.Name}
+        .form-group.row
+            label.col-md-3.col-form-label.font-weight-bold.text-right(for='Subject') Subject
+            .col-md-7
+                select.form-control(id="Subject", name="Subject")
+                    each sub in subjectList
+                        option(value=sub.id) #{sub.Name}     
+        .form-group.row
+            .offset-md-3.col-md-7.pl-2.text-center
+                button.col-md-3.btn.btn-primary(type='submit')
+                    i.fas.fa-cogs.fa-sm
+                    | GO
+    br
+                             
+
+        
+
+        
+

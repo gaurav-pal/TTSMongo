@@ -14,7 +14,7 @@ block content
       .col-md-7
         input.form-control(type='password', name='password', id='password', placeholder='Password', autocomplete='current-password', required)
     .form-group
-      .offset-md-3.col-md-7.pl-2
+      .offset-md-3.col-md-7.pl-2.text-center
         button.col-md-3.btn.btn-primary(type='submit')
           i.far.fa-user.fa-sm
           | Login
@@ -24,19 +24,19 @@ block content
         hr
     .form-group
       .offset-md-3.col-md-7.pl-2
-        a.btn.btn-block.btn-google.btn-social(href='/auth/google')
+        a.btn.btn-block.btn-google.btn-social.btn-success(href='/auth/google')
           i.fab.fa-google-plus-g.fa-xs
           | Sign in with Google
-        a.btn.btn-block.btn-facebook.btn-social(href='/auth/facebook')
+        a.btn.btn-block.btn-facebook.btn-social.btn-primary(href='/auth/facebook')
           i.fab.fa-facebook-f.fa-sm
           | Sign in with Facebook
-        a.btn.btn-block.btn-instagram.btn-social(href='/auth/instagram')
+        a.btn.btn-block.btn-instagram.btn-social.btn-success(href='/auth/instagram')
           i.fab.fa-instagram.fa-sm
           | Sign in with Instagram
-        a.btn.btn-block.btn-twitter.btn-social(href='/auth/twitter')
+        a.btn.btn-block.btn-twitter.btn-social.btn-primary(href='/auth/twitter')
           i.fab.fa-twitter.fa-sm
           | Sign in with Twitter
-        a.btn.btn-block.btn-linkedin.btn-social(href='/auth/linkedin')
+        a.btn.btn-block.btn-linkedin.btn-social.btn-success(href='/auth/linkedin')
           i.fab.fa-linkedin-in.fa-sm
           | Sign in with LinkedIn
         //- a.btn.btn-block.btn-twitch.btn-social(href='/auth/twitch')

@@ -4,8 +4,8 @@ const GradelevelSchema = new mongoose.Schema({
   Name: { type: String, unique: true },
   Description: String,
   LevelCreateDate: Date,
-  IntegerValue: [Number],
-  DisplaySeq: [Number],
+  IntegerValue: mongoose.Schema.Types.Number,
+  DisplaySeq: mongoose.Schema.Types.Number,
   GradeRateMultiplier: mongoose.Schema.Types.Decimal128,
   Active: Boolean
 }, { timestamps: true });

@@ -7,7 +7,7 @@
     "url": "https://github.com/sahat/hackathon-starter.git"
   },
   "license": "",
-  "author": "Gaurav Pal",  
+  "author": "Gaurav Pal",
   "scripts": {
     "start": "node app.js",
     "test": "nyc mocha --timeout=10000 --exit",
@@ -21,6 +21,7 @@
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.5.3",
+    "bootstrap-themes": "^1.0.2",
     "chalk": "^4.1.0",
     "chart.js": "^2.9.4",
     "cheerio": "^1.0.0-rc.3",
