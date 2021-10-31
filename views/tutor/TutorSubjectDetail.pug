@@ -1,0 +1,61 @@
+extends ../layout
+block head    
+    link(rel='stylesheet', href='/jsgrid/jsgrid.min.css')    
+    link(rel='stylesheet', href='/jsgrid/jsgrid-theme.min.css')  
+    script(src='/jsgrid/jsgrid.min.js')
+
+
+block content
+    div#jsGrid 
+
+    script.
+        $(function () {
+            $("#jsGrid").jsGrid({
+                    height: "800px",
+                    width: "100%",
+                    inserting: true,
+                    editing: true,
+                    sorting: true,
+                    paging: true,
+                    autoload: true,
+                    pageSize: 15,
+                    data:[],
+                    controller: {
+                        loadData: function (filter) {
+                            return $.ajax({
+                                type: "GET",
+                                url: "/Subject",
+                                data: filter
+                            });
+                        },
+                        insertItem: function (item) {
+                            return $.ajax({
+                                type: "POST",
+                                url: "/Subject",
+                                data: item
+                            });
+                        },
+                        updateItem: function (item) {
+                            return $.ajax({
+                                type: "PUT",
+                                url: "/Subject",
+                                data: item
+                            });
+                        },
+                        deleteItem: function (item) {
+                            return $.ajax({
+                                type: "DELETE",
+                                url: "/Subject",
+                                data: item
+                            });
+                        }
+                    },
+                    fields: [
+                        {name: "Name", title: "Name", type: "text", width: 60},
+                        {name: "Description", title: "Description", type: "text",  width: 50},
+                        {name: "SubjectRateMultiplier", title: "Suggested Price", type: "number",  width: 50},
+                        {name: "Active", title: "Active", type: "checkbox",  width: 50},
+                        {type: "control"}
+                    ]
+                });
+        });

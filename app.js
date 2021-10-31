@@ -123,6 +123,7 @@ app.use('/', express.static(path.join(__dirname, 'public'), { maxAge: 3155760000
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/chart.js/dist'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/popper.js/dist/umd'), { maxAge: 31557600000 }));
 app.use('/bsthemes', express.static(path.join(__dirname, 'node_modules/bootstrap-themes/dist/backstay'), { maxAge: 31557600000 }));
+app.use('/jsgrid', express.static(path.join(__dirname, 'node_modules/jsgrid/dist'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/jquery/dist'), { maxAge: 31557600000 }));
 app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free/webfonts'), { maxAge: 31557600000 }));
@@ -152,8 +153,16 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
+app.get('/StudentProfile',tutorController.StudentProfile);
+app.get('/TeacherProfile',tutorController.TeacherProfile);
 app.get('/search', tutorController.getSearch);
 app.post('/search', tutorController.postSearch);
+app.get('/TutorSubjectDetail', tutorController.TutorSubjectDetail);
+
+app.get('/Subject', tutorController.GetSubject);
+// app.post('/Subject', tutorController.PostSubject);
+// app.put('/Subject', tutorController.PutSubject);
+// app.delete('/Subject', tutorController.DeleteSubject);
 
 /**
  * API examples routes.

@@ -32,28 +32,84 @@ exports.getSearch = (req, res) => {
     });  
 };
 
+exports.StudentProfile = (req, res, next) => {
+  res.render('tutor/StudentProfile', {
+      title: 'Student\'s Profile',
+
+  });
+};
+
+exports.TeacherProfile = (req, res, next) => {
+  res.render('tutor/TeacherProfile', {
+      title: 'Teacher\'s Profile',
+      
+  });    
+};
+
 exports.postSearch = (req, res, next) => {
-    const validationErrors = [];
-    if (validator.isEmpty(req.body.Subject)) validationErrors.push({ msg: 'Please select a subject.' });
-    if (validator.isEmpty(req.body.GradeLevel)) validationErrors.push({ msg: 'Please select a grade level.' });
+    // const validationErrors = [];
+    // if (validator.isEmpty(req.body.Subject)) validationErrors.push({ msg: 'Please select a subject.' });
+    // if (validator.isEmpty(req.body.GradeLevel)) validationErrors.push({ msg: 'Please select a grade level.' });
   
-    if (validationErrors.length) {
-      req.flash('errors', validationErrors);
-      return res.redirect('tutor/search');
-    }
-    // req.body.email = validator.normalizeEmail(req.body.email, { gmail_remove_dots: false });
-  
-    // passport.authenticate('local', (err, user, info) => {
-    //   if (err) { return next(err); }
-    //   if (!user) {
-    //     req.flash('errors', info);
-    //     return res.redirect('/login');
-    //   }
-    //   req.logIn(user, (err) => {
-    //     if (err) { return next(err); }
-    //     req.flash('success', { msg: 'Success! You are logged in.' });
-    //     res.redirect(req.session.returnTo || '/');
-    //   });
-    // })(req, res, next);
+    // if (validationErrors.length) {
+    //   req.flash('errors', validationErrors);
+    //   return res.redirect('tutor/search');
+    // }
+
+    res.render('tutor/TeacherListForSearch', {  //// redirecting to product page.
+      title: 'Teacher List For Search'
+    });
   };
-  
+
+
+
+
+
+var getClientFilter = function(query) {
+    var result = {
+        Name: new RegExp(query.Name, "i"),
+        Description: new RegExp(query.Description, "i")
+    };
+
+    return result;
+};
+
+var prepareItem = function(source) {
+    var result = source;
+    result.Married = source.Married === 'true' ? true : false;
+    result.Country = parseInt(source.Country, 10);
+    return result;
+};
+
+exports.TutorSubjectDetail =  (req, res, next) => { 
+  res.render('tutor/TutorSubjectDetail', {  //// redirecting to product page.
+   
+  });
+};
+
+exports.GetSubject = async (req, res, next) => {
+  Subject.find(getClientFilter(req.query)).lean()
+  .exec(function(err0, items) {
+    res.json(items);
+  });
+};
+
+exports.PostSubject = (req, res) => {
+  Categorie.create(prepareItem(req.body), function(err, item) {
+      res.json(item);
+  });
+};
+
+exports.PutSubject = (req, res, next) => {
+  var item = prepareItem(req.body);
+    Categorie.update({ _id: item._id }, item, {}, function(err, item) {
+        res.json(item);
+    });
+};
+
+exports.DeleteSubject = (req) => {
+  var item = prepareItem(req.body);
+  Categorie.remove({ _id: item._id }, {}, function(err, item) {
+      res.json(item);
+  });
+};

@@ -53,6 +53,20 @@ block content
         button.btn.btn.btn-primary(type='submit')
           i.fas.fa-pencil-alt.fa-sm
           | Update Profile
+  
+  .pb-2.mt-2.mb-4.border-bottom
+    h3 Account Type
+    .row
+      .col-md-2
+      .col-md-3
+        a.btn.btn-primary.form-control(href='StudentProfile')
+          i.fas.fa-book-reader.fa-lg
+          | Student
+      .col-md-1
+      .col-md-3
+        a.btn.btn-primary.form-control(href='TeacherProfile')
+          i.fas.fa-user-graduate.fa-lg
+          | Teacher
 
   .pb-2.mt-2.mb-4.border-bottom
     h3 Change Password
@@ -137,3 +151,7 @@ block content
     //-     p.mb-1: a.text-danger(href='/account/unlink/quickbooks') Unlink your QuickBooks account
     //-   else
     //-     p.mb-1: a(href='/auth/quickbooks') Link your QuickBooks account
+    br
+    br
+    br
+    br
