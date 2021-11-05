@@ -1,4 +1,4 @@
-const Gradelevel = require('../models/Gradelevel');
+const Gradelevel = require('../models/GradeLevel');
 
 try {
     Gradelevel.insertMany( [

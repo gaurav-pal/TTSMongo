@@ -153,15 +153,28 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
-app.get('/StudentProfile',tutorController.StudentProfile);
-app.get('/TeacherProfile',tutorController.TeacherProfile);
+app.get('/StudentProfile',passportConfig.isAuthenticated,tutorController.StudentProfile);
+app.get('/TeacherProfile',passportConfig.isAuthenticated,tutorController.TeacherProfile);
+app.post('/TeacherProfile',passportConfig.isAuthenticated,tutorController.PostTeacherProfile);
 app.get('/search', tutorController.getSearch);
 app.post('/search', tutorController.postSearch);
 app.get('/TutorSubjectDetail', tutorController.TutorSubjectDetail);
 
-app.get('/Subject', tutorController.GetSubject);
-// app.post('/Subject', tutorController.PostSubject);
-// app.put('/Subject', tutorController.PutSubject);
+
+/**
+ * Profile sub routes.
+ */
+app.get('/Profile', passportConfig.isAuthenticated, tutorController.GetProfile);
+app.post('/Profile', passportConfig.isAuthenticated, tutorController.PostProfile);
+app.put('/Profile', passportConfig.isAuthenticated, tutorController.PutProfile);
+app.delete('/Profile', passportConfig.isAuthenticated, tutorController.DeleteProfile);
+
+/**
+ * Subject routes.
+ */
+//app.get('/Subject', tutorController.GetSubject);
+//app.post('/Subject', tutorController.PostSubject);
+//app.put('/Subject', tutorController.PutSubject);
 // app.delete('/Subject', tutorController.DeleteSubject);
 
 /**

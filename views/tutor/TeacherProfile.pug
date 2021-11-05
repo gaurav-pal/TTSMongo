@@ -1,5 +1,109 @@
 extends ../layout
+block head    
+    link(rel='stylesheet', href='/jsgrid/jsgrid.min.css')    
+    link(rel='stylesheet', href='/jsgrid/jsgrid-theme.min.css')  
+    script(src='/jsgrid/jsgrid.min.js')
 
 block content
+  .text-right
+    a.btn.btn-primary.btn-sm(href="/account") 
+      i.fas.fa-reply.fa-sm
+      | Go back to profile home
   .pb-2.mt-2.mb-4.border-bottom
     h3 Teacher Profile
+    p Complete your profile for teaching.
+
+  form(action='TeacherProfile', method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='About') About
+      .col-md-7
+        textarea.form-control(name="About", id="About", cols="30", rows="5")=profile.About
+
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='Address') Address 
+      .col-md-7
+        input.form-control(type='text', name='Address', id='Address', value=profile.Address, autocomplete='address')
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='City') City 
+      .col-md-7
+        input.form-control(type='text', name='City', id='City', value=profile.City, autocomplete='City')    
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='State') State 
+      .col-md-7
+        input.form-control(type='text', name='State', id='State', value=profile.State, autocomplete='State')  
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='ZipCode') Zip Code 
+      .col-md-7
+        input.form-control(type='text', name='ZipCode', id='ZipCode', value=profile.ZipCode, autocomplete='ZipCode')    
+    .form-group
+      .offset-sm-3.col-md-7.pl-2.text-center
+        button.btn.btn.btn-primary(type='submit')
+          i.fas.fa-pencil-alt.fa-sm
+          | Update 
+
+    br
+    br
+    br
+
+    .pb-2.mt-2.mb-4.border-bottom
+      h3 List all the subjects that you want to teach.
+
+
+  div#jsGrid 
+  
+  script.
+      $(function () {          
+          $("#jsGrid").jsGrid({
+            height: "640px",
+            width: "100%",
+            title: "List all the subjects and rates that you want to charge per hour.",
+            inserting: true,
+            editing: true,
+            sorting: true,
+            paging: true,
+            autoload: true,
+            pageSize: 15,
+            data:[],
+            controller: {
+                loadData: function (filter) {
+                    return $.ajax({
+                        type: "GET",
+                        url: "Subject",
+                        data: filter
+                    });
+                },
+                insertItem: function (item) {
+                    item._csrf = $('meta[name="csrf-token"]').attr('content');
+                    return $.ajax({
+                        type: "POST",
+                        url: "Subject/" + item.id,
+                        data: item
+                    });
+                },
+                updateItem: function (item) {
+                    _csrf = $('meta[name="csrf-token"]').attr('content');
+                    return $.ajax({
+                        type: "PUT",
+                        url: "Subject/",
+                        data: { item, _csrf}
+                    });
+                },
+                deleteItem: function (item) {
+                    item._csrf = $('meta[name="csrf-token"]').attr('content');
+                    return $.ajax({
+                        type: "DELETE",
+                        url: "/Subject",
+                        data: item
+                    });
+                }
+            },
+            fields: [
+                {name: "Name", title: "Name", type: "text", width: 60},
+                {name: "Description", title: "Description", type: "text",  width: 50},
+                {name: "SubjectRateMultiplier", title: "Suggested Price", type: "number",  width: 50},
+                {name: "Active", title: "Active", type: "checkbox",  width: 50},
+                {type: "control"}
+            ]
+        });
+      });
