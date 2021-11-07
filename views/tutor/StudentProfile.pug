@@ -1,5 +1,128 @@
 extends ../layout
+block head    
+    link(rel='stylesheet', href='/jsgrid/jsgrid.min.css')    
+    link(rel='stylesheet', href='/jsgrid/jsgrid-theme.min.css')  
+    script(src='/jsgrid/jsgrid.min.js')
 
 block content
+  .text-right
+    a.btn.btn-primary.btn-sm(href="/account") 
+      i.fas.fa-reply.fa-sm
+      | Go back to profile home
   .pb-2.mt-2.mb-4.border-bottom
     h3 Student Profile
+    p Complete your profile as student.
+
+  form(action='StudentProfile', method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='About') About
+      .col-md-7
+        textarea#About.form-control(name="About", cols="30", rows="5")
+          if profile != null && (profile.About != undefined || profile.About != null)
+            |  #{profile.About}
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='Address') Address 
+      .col-md-7
+        input.form-control(type='text', name='Address', id='Address', value=profile.Address, autocomplete='address')
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='City') City 
+      .col-md-7
+        input.form-control(type='text', name='City', id='City', value=profile.City, autocomplete='City')    
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='State') State 
+      .col-md-7
+        input.form-control(type='text', name='State', id='State', value=profile.State, autocomplete='State')  
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='ZipCode') Zip Code 
+      .col-md-7
+        input.form-control(type='text', name='ZipCode', id='ZipCode', value=profile.ZipCode, autocomplete='ZipCode')    
+    .form-group
+      .offset-sm-3.col-md-7.pl-2.text-center
+        button.btn.btn.btn-primary(type='submit')
+          i.fas.fa-pencil-alt.fa-sm
+          | Update 
+
+    br
+    br
+
+    .pb-2.mt-2.mb-4.border-bottom
+      h3 List all the subjects that you want to support with.
+    
+    div#jsGrid 
+  
+  script.
+      $(function () {   
+         $.ajax({
+            type: "GET",
+            url: "GetAllGrades"
+        }).done(function(GradeList) {  
+                $.ajax({
+                  type: "GET",
+                  url: "GetAllSubjects"
+                }).done(function(SubjectsList) {      
+                    $("#jsGrid").jsGrid({
+                      height: "320px",
+                      width: "100%",
+                      title: "List all the subjects and rates that you want to charge per hour.",
+                      inserting: true,
+                      editing: true,
+                      sorting: true,
+                      paging: true,
+                      autoload: true,
+                      pageSize: 10,
+                      data:[],
+                      controller: {
+                          loadData: function (filter) {
+                              return $.ajax({
+                                  type: "GET",
+                                  url: "GetStudentGradeSubject",
+                                  data: filter
+                              });
+                          },
+                          insertItem: function (item) {
+                              _csrf = $('meta[name="csrf-token"]').attr('content');
+                              return $.ajax({
+                                  type: "POST",
+                                  url: "GetStudentGradeSubject",
+                                  data: { item, _csrf},
+                                  error: function(xhr, status, error) {
+                                    if(status == "parsererror" && xhr.readyState == "4" && xhr.status == 200 && xhr.statusText =="OK")  {
+                                      alert("Please change existing row with same grade and subject.");
+                                    }
+                                  }
+                              });
+                          },
+                          updateItem: function (item) {
+                              _csrf = $('meta[name="csrf-token"]').attr('content');
+                              return $.ajax({
+                                  type: "PUT",
+                                  url: "GetStudentGradeSubject",
+                                  data: { item, _csrf},
+                                  error: function(xhr, status, error) {
+                                    if(status == "parsererror" && xhr.readyState == "4" && xhr.status == 200 && xhr.statusText =="OK")  {
+                                      alert("Please change existing row with same grade and subject.");
+                                    }
+                                }
+                              });
+                          },
+                          deleteItem: function (item) {
+                              _csrf = $('meta[name="csrf-token"]').attr('content');
+                              return $.ajax({
+                                  type: "DELETE",
+                                  url: "GetStudentGradeSubject",
+                                  data: { item, _csrf}
+                              });
+                          }
+                      },
+                      fields: [
+                          {name: "GradeLevel", title: "Grade", type: "select", width: 100, items: GradeList, valueField: "Name", textField: "Name"},
+                          {name: "Subject", title: "Subject", type: "select", width: 100, items: SubjectsList, valueField: "Name", textField: "Name"},
+                          {name: "Comments", title: "Comments", type: "text", width: 60},
+                          {name: "Active", title: "Active", type: "checkbox",  width: 20},
+                          {type: "control"}
+                      ]
+                  });
+                });
+            });
+      });

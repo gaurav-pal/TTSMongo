@@ -18,8 +18,9 @@ block content
     .form-group.row
       label.col-md-3.col-form-label.font-weight-bold.text-right(for='About') About
       .col-md-7
-        textarea.form-control(name="About", id="About", cols="30", rows="5")=profile.About
-
+        textarea#About.form-control(name="About", cols="30", rows="5")
+          if profile != null && (profile.About != undefined || profile.About != null)
+            |  #{profile.About}
     .form-group.row
       label.col-md-3.col-form-label.font-weight-bold.text-right(for='Address') Address 
       .col-md-7
@@ -44,66 +45,85 @@ block content
 
     br
     br
-    br
 
     .pb-2.mt-2.mb-4.border-bottom
-      h3 List all the subjects that you want to teach.
-
-
-  div#jsGrid 
+      h3 List all the subjects and rates that you want to charge per hour.
+    
+    div#jsGrid 
   
   script.
-      $(function () {          
-          $("#jsGrid").jsGrid({
-            height: "640px",
-            width: "100%",
-            title: "List all the subjects and rates that you want to charge per hour.",
-            inserting: true,
-            editing: true,
-            sorting: true,
-            paging: true,
-            autoload: true,
-            pageSize: 15,
-            data:[],
-            controller: {
-                loadData: function (filter) {
-                    return $.ajax({
-                        type: "GET",
-                        url: "Subject",
-                        data: filter
-                    });
-                },
-                insertItem: function (item) {
-                    item._csrf = $('meta[name="csrf-token"]').attr('content');
-                    return $.ajax({
-                        type: "POST",
-                        url: "Subject/" + item.id,
-                        data: item
-                    });
-                },
-                updateItem: function (item) {
-                    _csrf = $('meta[name="csrf-token"]').attr('content');
-                    return $.ajax({
-                        type: "PUT",
-                        url: "Subject/",
-                        data: { item, _csrf}
-                    });
-                },
-                deleteItem: function (item) {
-                    item._csrf = $('meta[name="csrf-token"]').attr('content');
-                    return $.ajax({
-                        type: "DELETE",
-                        url: "/Subject",
-                        data: item
-                    });
-                }
-            },
-            fields: [
-                {name: "Name", title: "Name", type: "text", width: 60},
-                {name: "Description", title: "Description", type: "text",  width: 50},
-                {name: "SubjectRateMultiplier", title: "Suggested Price", type: "number",  width: 50},
-                {name: "Active", title: "Active", type: "checkbox",  width: 50},
-                {type: "control"}
-            ]
-        });
+      $(function () {   
+         $.ajax({
+            type: "GET",
+            url: "GetAllGrades"
+        }).done(function(GradeList) {  
+                $.ajax({
+                  type: "GET",
+                  url: "GetAllSubjects"
+                }).done(function(SubjectsList) {      
+                    $("#jsGrid").jsGrid({
+                      height: "320px",
+                      width: "100%",
+                      title: "List all the subjects and rates that you want to charge per hour.",
+                      inserting: true,
+                      editing: true,
+                      sorting: true,
+                      paging: true,
+                      autoload: true,
+                      pageSize: 10,
+                      data:[],
+                      controller: {
+                          loadData: function (filter) {
+                              return $.ajax({
+                                  type: "GET",
+                                  url: "GetTeacherGradeSubject",
+                                  data: filter
+                              });
+                          },
+                          insertItem: function (item) {
+                              _csrf = $('meta[name="csrf-token"]').attr('content');
+                              return $.ajax({
+                                  type: "POST",
+                                  url: "GetTeacherGradeSubject",
+                                  data: { item, _csrf},
+                                  error: function(xhr, status, error) {
+                                    if(status == "parsererror" && xhr.readyState == "4" && xhr.status == 200 && xhr.statusText =="OK")  {
+                                      alert("Please change existing row with same grade and subject.");
+                                    }
+                                  }
+                              });
+                          },
+                          updateItem: function (item) {
+                              _csrf = $('meta[name="csrf-token"]').attr('content');
+                              return $.ajax({
+                                  type: "PUT",
+                                  url: "GetTeacherGradeSubject",
+                                  data: { item, _csrf},
+                                  error: function(xhr, status, error) {
+                                    if(status == "parsererror" && xhr.readyState == "4" && xhr.status == 200 && xhr.statusText =="OK")  {
+                                      alert("Please change existing row with same grade and subject.");
+                                    }
+                                }
+                              });
+                          },
+                          deleteItem: function (item) {
+                              _csrf = $('meta[name="csrf-token"]').attr('content');
+                              return $.ajax({
+                                  type: "DELETE",
+                                  url: "GetTeacherGradeSubject",
+                                  data: { item, _csrf}
+                              });
+                          }
+                      },
+                      fields: [
+                          {name: "GradeLevel", title: "Grade", type: "select", width: 100, items: GradeList, valueField: "Name", textField: "Name"},
+                          {name: "Subject", title: "Subject", type: "select", width: 100, items: SubjectsList, valueField: "Name", textField: "Name"},
+                          {name: "Rate", title: "Rate (per hour)", type: "number", width: 60, validate: { validator: "range", param: [10, 500], message: "Please enter a valid Rate, between 10 and 500" }},
+                          {name: "Comments", title: "Comments", type: "text", width: 60},
+                          {name: "Active", title: "Active", type: "checkbox",  width: 20},
+                          {type: "control"}
+                      ]
+                  });
+                });
+            });
       });

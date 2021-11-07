@@ -3,13 +3,15 @@ const crypto = require('crypto');
 //const nodemailer = require('nodemailer');
 //const nodemailerSendgrid = require('nodemailer-sendgrid');
 //const passport = require('passport');
-//const _ = require('lodash');
+const _ = require('lodash');
 const validator = require('validator');
 //const mailChecker = require('mailchecker');
 const Subject = require('../models/Subject');
 const GradeLevel = require('../models/GradeLevel');
 const Profile = require('../models/Profile');
+const UserGradeSubjectList = require('../models/UserGradeSubjectList');
 const { Console } = require('console');
+const { fstat } = require('fs');
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
@@ -33,7 +35,6 @@ exports.getSearch = (req, res) => {
     });  
 };
 
-
 exports.postSearch = (req, res, next) => {
   // const validationErrors = [];
   // if (validator.isEmpty(req.body.Subject)) validationErrors.push({ msg: 'Please select a subject.' });
@@ -49,49 +50,42 @@ exports.postSearch = (req, res, next) => {
   });
 };
 
-exports.StudentProfile = (req, res, next) => {
-  var profile = Profile.findOne({ "UserID": req.user.id });
-  
-  res.render('tutor/StudentProfile', {
-      title: 'Student\'s Profile',
-      profile: profile
-  });
-};
-
-exports.TeacherProfile = (req, res, next) => {
-  //console.log(req.user.id);
-  var profile = Profile.findOne({ UserID: req.user.id }, (error, result) => {
-    if(error) {
-      console.log(profile);
-      res.render('tutor/TeacherProfile', {
-        title: 'Teacher\'s Profile'
-      });   
+exports.TeacherProfile = (req, res, next) => {  
+  var query = {
+      UserID: req.user.id
+    },
+    update = { 
+      UserID: req.user.id,
+      Flags:"",
+      IsTeacher:true
+    },
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  Profile.findOneAndUpdate(query, update, options, function(error, result) {
+    if (error) {
+      console.log(error);
+      return;
     }
     res.render('tutor/TeacherProfile', {
       title: 'Teacher\'s Profile',
       profile: result
-    }); 
-  });
-  
+    });
+  });  
 };
 
-exports.PostTeacherProfile = (req, res, next) => { /// TODO: Post teacher profile and comeback to teacher profile
-  console.log(req.body);
-  console.log(req.user.id);
+exports.PostTeacherProfile = (req, res, next) => { 
   var query = {
       UserID: req.user.id
-  },
-  update = { 
-    UserID: req.user.id,
-    About: req.body.About,
-    Flags: "",
-    Address: req.body.Address,
-    City: req.body.City,
-    State: req.body.State,
-    ZipCode: req.body.ZipCode
-   },
-  options = { upsert: true, new: true, setDefaultsOnInsert: true };
-
+    },
+    update = { 
+      UserID: req.user.id,
+      About: req.body.About,
+      Address: req.body.Address,
+      City: req.body.City,
+      State: req.body.State,
+      ZipCode: req.body.ZipCode,      
+      IsTeacher:true
+    },
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
   Profile.findOneAndUpdate(query, update, options, function(error, result) {
     if (error) {
       console.log(error);
@@ -104,51 +98,189 @@ exports.PostTeacherProfile = (req, res, next) => { /// TODO: Post teacher profil
   });
 };
 
-var getProfileFilter = function(query) {
-  var result = {
-      user: new RegExp(query.Name, "i"),
-      Description: new RegExp(query.Description, "i"),
-      Active: true
+exports.GetTeacherGradeSubject = async (req, res, next) => {
+  UserGradeSubjectList.find({UserID: req.user.id, IsTeacherDocument: true})
+    .exec(function(err0, items) {
+      res.json(items);
+    });
+};
+
+exports.PostTeacherGradeSubject = (req, res) => {  
+  var TgsVariable = req.body.item;
+  
+  var TeacherGradeSubject = { 
+    UserID: req.user.id,
+    GradeLevel:TgsVariable.GradeLevel,  
+    Subject:TgsVariable.Subject,  
+    Rate: TgsVariable.Rate,
+    Comments:TgsVariable.Comments,
+    Active:TgsVariable.Active,
+    IsTeacherDocument: true
   };
-  return result;
+
+  UserGradeSubjectList.create(TeacherGradeSubject, function (err, doc) {
+    if (err) console.log("Something wrong when updating data!");
+    res.json(doc);
+  });
 };
 
-var prepareProfile = function(source) {
-  var result = source;
-  if(source.UserID){} ///TODO: if no date then todays date else leave it. for date
+exports.PutTeacherGradeSubject = (req, res, next) => {
+  var TgsVariable = req.body.item;
+  var query = {
+    _id: TgsVariable._id
+    };
+  
+  var TeacherGradeSubject = { 
+    GradeLevel:TgsVariable.GradeLevel,  
+    Subject:TgsVariable.Subject,  
+    Rate: TgsVariable.Rate,
+    Comments:TgsVariable.Comments,
+    Active:TgsVariable.Active,
+    IsTeacherDocument: true
+  };
 
-  return result;
+  UserGradeSubjectList.findOneAndUpdate( query, 
+    TeacherGradeSubject,
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) {
+          console.log("Something wrong when updating data!");
+      }
+      res.json(doc);
+    });
 };
 
-exports.GetProfile = async (req, res, next) => {
-  Profile.find(getProfileFilter(req.query)).lean().exec(function(err0, items) {
+exports.DeleteTeacherGradeSubject = (req, res) => {
+  var TgsVariable = req.body.item;
+  UserGradeSubjectList.deleteOne({ _id: TgsVariable._id}, {}, function(err, item) {
+      res.json(item);
+  });
+};
+
+exports.GetAllSubjects = async (req, res, next) => {
+  Subject.find({Active: true}, '_id Name', {sort: {DisplaySeq: 1}})
+  .exec(function(err0, items) {
     res.json(items);
   });
 };
 
-exports.PostProfile = (req, res) => {
-  Profile.create(prepareProfile(req.body), function(err, item) {
-      res.json(item);
+exports.GetAllGradelevels = async (req, res, next) => {
+  GradeLevel.find({Active: true}, '_id Name', {sort: { DisplaySeq : 1}})
+  .exec(function(err0, items) {
+    res.json(items);
   });
 };
 
-exports.PutProfile = (req, res, next) => {
-  var item = prepareProfile(req.body.item);
-  Profile.updateOne({ _id: item._id }, item, {}, function(err, item) {
-      res.json(item);
+exports.StudentProfile = (req, res, next) => {
+  var query = {
+    UserID: req.user.id
+  },
+  update = { 
+    UserID: req.user.id,
+    Flags:"",
+    IsStudent:true
+  },
+  options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  Profile.findOneAndUpdate(query, update, options, function(error, result) {
+    if (error) {
+      console.log(error);
+      return;
+    }
+    res.render('tutor/StudentProfile', {
+      title: 'Student\'s Profile',
+      profile: result
+    });
+  });  
+};
+
+exports.PostStudentProfile = (req, res, next) => { 
+  var query = {
+      UserID: req.user.id
+    },
+    update = { 
+      UserID: req.user.id,
+      About: req.body.About,
+      Address: req.body.Address,
+      City: req.body.City,
+      State: req.body.State,
+      ZipCode: req.body.ZipCode,      
+      IsStudent:true
+    },
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  Profile.findOneAndUpdate(query, update, options, function(error, result) {
+    if (error) {
+      console.log(error);
+      return;
+    }
+    res.render('tutor/StudentProfile', {
+      title: 'Student\'s Profile',
+      profile: result
+    });
   });
 };
 
-exports.DeleteProfile = (req) => {
-  var item = prepareProfile(req.body.item);
-  Profile.remove({ _id: item._id }, {}, function(err, item) {
-      res.json(item);
+exports.GetStudentGradeSubject = async (req, res, next) => {
+  UserGradeSubjectList.find({UserID: req.user.id, IsTeacherDocument: false})
+    .exec(function(err0, items) {
+      res.json(items);
+    });
+};
+
+exports.PostStudentGradeSubject = (req, res) => {  
+  var TgsVariable = req.body.item;
+  
+  var TeacherGradeSubject = { 
+    UserID: req.user.id,
+    GradeLevel:TgsVariable.GradeLevel,  
+    Subject:TgsVariable.Subject,  
+    Rate: 0,
+    Comments:TgsVariable.Comments,
+    Active:TgsVariable.Active,
+    IsTeacherDocument: false
+  };
+
+  UserGradeSubjectList.create(TeacherGradeSubject, function (err, doc) {
+    if (err) console.log("Something wrong when updating data!");
+    res.json(doc);
   });
 };
 
+exports.PutStudentGradeSubject = (req, res, next) => {
+  var TgsVariable = req.body.item;
+  var query = {
+    _id: TgsVariable._id
+    };
+  
+  var TeacherGradeSubject = { 
+    GradeLevel:TgsVariable.GradeLevel,  
+    Subject:TgsVariable.Subject,  
+    Rate: 0,
+    Comments:TgsVariable.Comments,
+    Active:TgsVariable.Active,
+    IsTeacherDocument: false
+  };
 
+  UserGradeSubjectList.findOneAndUpdate( query, 
+    TeacherGradeSubject,
+    {
+      new: true
+    },
+    (err, doc) => {
+      if (err) {
+          console.log("Something wrong when updating data!");
+      }
+      res.json(doc);
+    });
+};
 
-
+exports.DeleteStudentGradeSubject = (req, res) => {
+  var TgsVariable = req.body.item;
+  UserGradeSubjectList.deleteOne({ _id: TgsVariable._id}, {}, function(err, item) {
+      res.json(item);
+  });
+};
 
 
 

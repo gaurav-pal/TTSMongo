@@ -154,20 +154,27 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/StudentProfile',passportConfig.isAuthenticated,tutorController.StudentProfile);
+app.post('/StudentProfile',passportConfig.isAuthenticated,tutorController.PostStudentProfile);
 app.get('/TeacherProfile',passportConfig.isAuthenticated,tutorController.TeacherProfile);
 app.post('/TeacherProfile',passportConfig.isAuthenticated,tutorController.PostTeacherProfile);
 app.get('/search', tutorController.getSearch);
 app.post('/search', tutorController.postSearch);
 app.get('/TutorSubjectDetail', tutorController.TutorSubjectDetail);
 
-
 /**
  * Profile sub routes.
  */
-app.get('/Profile', passportConfig.isAuthenticated, tutorController.GetProfile);
-app.post('/Profile', passportConfig.isAuthenticated, tutorController.PostProfile);
-app.put('/Profile', passportConfig.isAuthenticated, tutorController.PutProfile);
-app.delete('/Profile', passportConfig.isAuthenticated, tutorController.DeleteProfile);
+app.get('/GetTeacherGradeSubject', passportConfig.isAuthenticated, tutorController.GetTeacherGradeSubject);
+app.post('/GetTeacherGradeSubject', passportConfig.isAuthenticated, tutorController.PostTeacherGradeSubject);
+app.put('/GetTeacherGradeSubject', passportConfig.isAuthenticated, tutorController.PutTeacherGradeSubject);
+app.delete('/GetTeacherGradeSubject', passportConfig.isAuthenticated, tutorController.DeleteTeacherGradeSubject);
+app.get('/GetAllGrades', tutorController.GetAllGradelevels);
+app.get('/GetAllSubjects', tutorController.GetAllSubjects);
+
+app.get('/GetStudentGradeSubject', passportConfig.isAuthenticated, tutorController.GetStudentGradeSubject);
+app.post('/GetStudentGradeSubject', passportConfig.isAuthenticated, tutorController.PostStudentGradeSubject);
+app.put('/GetStudentGradeSubject', passportConfig.isAuthenticated, tutorController.PutStudentGradeSubject);
+app.delete('/GetStudentGradeSubject', passportConfig.isAuthenticated, tutorController.DeleteStudentGradeSubject);
 
 /**
  * Subject routes.

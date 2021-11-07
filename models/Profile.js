@@ -14,31 +14,22 @@ const profileSchema = new mongoose.Schema({
     City: mongoose.Schema.Types.String,
     State: mongoose.Schema.Types.String,
     ZipCode: mongoose.Schema.Types.String,
-    TeacherActive: {
+    IsTeacher:{
         type: mongoose.Schema.Types.Boolean,
         default: false
     },
-    StudentActive: {
+    IsStudent:{
+        type: mongoose.Schema.Types.Boolean,
+        default: false
+    },
+    IsTeacherApproved: {
+        type: mongoose.Schema.Types.Boolean,
+        default: false
+    },
+    IsStudentApproved: {
         type: mongoose.Schema.Types.Boolean,
         default: true
-    },
-
-    TeacherProfile:[{
-        GradeLevel:mongoose.Schema.Types.String,  
-        Subject:mongoose.Schema.Types.String,  
-        Rate: mongoose.Schema.Types.Number,
-        Comments:mongoose.Schema.Types.String,
-        TeacherGradeSubjectRateDate: mongoose.Schema.Types.Date,
-        Active: mongoose.Schema.Types.Boolean
-    }],
-
-    StudentProfile:[{
-        GradeLevel:mongoose.Schema.Types.String,  
-        Subject:mongoose.Schema.Types.String,
-        Comments:mongoose.Schema.Types.String,
-        Active: mongoose.Schema.Types.Boolean
-        }],
-
+    }
 }, { timestamps: true });
 
 
