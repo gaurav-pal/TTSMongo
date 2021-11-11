@@ -16,11 +16,11 @@ const { fstat } = require('fs');
 const randomBytesAsync = promisify(crypto.randomBytes);
 
 exports.getSearch = (req, res) => {
-  Subject.find({ "Active": true }, function(err0, allSubjects) {
+  Subject.find({ "Active": true }, '_id Name', {sort: { DisplaySeq : 1}}, function(err0, allSubjects) {
       if (err0) {
           console.log(err0);
       } else {
-        GradeLevel.find({ "Active": true }, function(err1, allGradeLevels) {
+        GradeLevel.find({ "Active": true }, '_id Name', {sort: { DisplaySeq : 1}}, function(err1, allGradeLevels) {
             if (err1) {
                 console.log(err1);
             } else {
