@@ -1,10 +1,10 @@
 {
-  "name": "TTSMongo",
+  "name": "thetutorservices",
   "version": "1.0.0",
   "description": "The Tutor Services on Node.js as web applications",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sahat/hackathon-starter.git"
+    "url": "https://github.com/github.com/gaurav-pal/TTSMongo.git"
   },
   "license": "",
   "author": "Gaurav Pal",
