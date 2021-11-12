@@ -666,16 +666,38 @@ exports.getPayPalCancel = (req, res) => {
  * File Upload API example.
  */
 
-// exports.getFileUpload = (req, res) => {
-//   res.render('api/upload', {
-//     title: 'File Upload'
-//   });
-// };
+exports.getFileUpload = (req, res) => {
+  res.render('api/upload', {
+    title: 'File Upload'
+  });
+};
 
-// exports.postFileUpload = (req, res) => {
-//   req.flash('success', { msg: 'File was uploaded successfully.' });
-//   res.redirect('/api/upload');
-// };
+exports.postFileUpload = (req, res) => {
+  if (!req.file) {
+    req.flash('errors', { msg: 'No file uploaded.' });
+    res.redirect('/api/upload');
+  }
+  
+const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
+  const blob = bucket.file(req.file.originalname);
+  const blobStream = blob.createWriteStream();
+
+  blobStream.on('error', err => {
+    next(err);
+  });
+
+  blobStream.on('finish', () => {
+    const publicUrl = format(
+      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+    );
+    res.status(200).send(publicUrl);
+  });
+
+  blobStream.end(req.file.buffer);
+
+  req.flash('success', { msg: 'File was uploaded successfully.' });
+  res.redirect('/api/upload');
+};
 
 /**
  * GET /api/pinterest
