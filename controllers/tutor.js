@@ -24,7 +24,7 @@ exports.getSearch = (req, res) => {
             if (err1) {
                 console.log(err1);
             } else {
-                res.render('tutor/search', {
+                res.render('tutor/Search', {
                     title: '4 Step Process',
                     gradeLevels : allGradeLevels,
                     subjectList: allSubjects,
@@ -46,7 +46,8 @@ exports.postSearch = (req, res, next) => {
   // }
 
   res.render('tutor/TeacherListForSearch', {  //// redirecting to product page.
-    title: 'Teacher List For Search'
+    title: 'Teacher List For Search',
+    
   });
 };
 
