@@ -10,8 +10,10 @@ const Subject = require('../models/Subject');
 const GradeLevel = require('../models/GradeLevel');
 const Profile = require('../models/Profile');
 const UserGradeSubjectList = require('../models/UserGradeSubjectList');
+const UserList = require('../models/User');
 const { Console } = require('console');
 const { fstat } = require('fs');
+const { forEach } = require('lodash');
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
@@ -44,10 +46,43 @@ exports.postSearch = (req, res, next) => {
   //   req.flash('errors', validationErrors);
   //   return res.redirect('tutor/search');
   // }
-
-  res.render('tutor/TeacherListForSearch', {  //// redirecting to product page.
-    title: 'Teacher List For Search',
-    
+  var TeachersList = [];
+  UserGradeSubjectList.aggregate([
+        {$match:{"Active": true , "IsTeacherDocument": true, "GradeLevel": req.body.GradeLevel, "Subject": req.body.Subject}},
+        {$lookup: {from: "profiles",localField: "UserID",foreignField: "UserID",as: "prfs"}},
+        {$unwind :"$prfs"},
+        {$lookup: {from: "users",localField: "UserID",foreignField: "_id",as: "usr"}},
+        {$unwind :"$usr"},
+    ],
+    function( error, uL ) {
+      if (error) {
+        console.log(error);
+        return;
+      }
+        uL.forEach(function(x){
+          const size = 200;
+          var Grvtr = "";
+          if (!x.usr.email) Grvtr =  `https://gravatar.com/avatar/?s=${size}&d=retro`;
+          else{
+            const md5 = crypto.createHash('md5').update(x.usr.email).digest('hex');
+            Grvtr = `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
+          }
+          var display = {
+            Name: x.usr.profile.name, 
+            Rate: x.Rate, 
+            Gender: x.usr.profile.gender, 
+            About: x.prfs.About , 
+            SubjectComment : x.Comments, 
+            Picture: x.usr.profile.picture, 
+            Gravatar: Grvtr};
+          for(i=0;i<5;i++){
+              TeachersList.push(display);
+      }                    
+    });
+    res.render('tutor/TeacherListForSearch', {
+      title: 'Teacher List For Search',
+      TeachersList : TeachersList
+    });  
   });
 };
 
