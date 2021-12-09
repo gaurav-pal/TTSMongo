@@ -13,6 +13,7 @@ const dotenv = require('dotenv');
 const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const path = require('path');
+//const helmet = require('helmet');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const sass = require('node-sass-middleware');
@@ -45,6 +46,7 @@ const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
 const tutorController = require('./controllers/tutor');
+const cartController = require('./controllers/cart');
 
 /**
  * API keys and Passport configuration.
@@ -86,6 +88,7 @@ app.use(sass({
   dest: path.join(__dirname, 'public')
 }));
 app.use(logger('dev'));
+//app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -93,11 +96,16 @@ app.use(session({
   saveUninitialized: true,
   secret: process.env.SESSION_SECRET,
   cookie: { maxAge: 1209600000 }, // two weeks in milliseconds
+  // unset: 'destroy',
   store: new MongoStore({
     url: process.env.MONGODB_URI,
     autoReconnect: true,
     dbName: process.env.MONGODB_DATABASE
-  })
+  }),
+  // name:process.env.NAME + '-' + Security.generateId(),
+  // genid: (req) => {
+  //   return Security.generateId()
+  // }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -172,6 +180,13 @@ app.post('/TeacherProfile',passportConfig.isAuthenticated,tutorController.PostTe
 app.get('/search', tutorController.getSearch);
 app.post('/search', tutorController.postSearch);
 app.get('/TutorSubjectDetail', tutorController.TutorSubjectDetail);
+app.get('/cart', cartController.gotoCart);
+app.post('/cart', cartController.postCart);
+app.post('/cart/update', cartController.updateCart);
+app.get('/cart/remove/:id', cartController.removeCart);
+app.get('/cart/empty', cartController.emptyCart);
+app.get('/checkout', cartController.getCheckout);
+app.post('/checkout', cartController.postCheckout);
 
 /**
  * Profile sub routes.

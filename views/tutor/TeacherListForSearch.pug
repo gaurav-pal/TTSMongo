@@ -1,4 +1,7 @@
 extends ../layout
+block head    
+    link(rel='stylesheet', href='/css/cartstyle.css')
+    script(src='/js/store.js')
 
 block content    
     - var n = 0;
@@ -9,9 +12,9 @@ block content
             | Change Selection
     .pb-2.mt-2.mb-4.border-bottom
         if tc > 0
-            h3 Good News !!! #[br] #[br] We have #{tc} teachers available for the selection
+            h4 Good News !!! #[br] #[br] We have #{tc} teachers available for the selection of "#{GradeLevel}" (GradeLevel) and "#{Subject}" (Subject)
         else 
-            h3 Sorry, We do not have any teacher available for your selection. #[br] #[br]
+            h4 Sorry, We do not have any teacher available for your selection. #[br] #[br]
                 | Please fill our #[a(href="/contact") contact us] form with details. We will try to arrange something for you. 
     br
 
@@ -42,19 +45,19 @@ block content
                         | #{tea.About}
                 .card-footer
                     form(action="/cart", method="post")
-                        b Hours ? 
-                        .input-group.qty-wrap
-                            .input-group-prepend                             
-                                span.qty-minus.input-group-text
-                                    i.fa.fa-minus 
-                            input.form-control(name="qty", type="text", value="1", aria-label="Small", aria-describedby="inputGroup-sizing-sm")
-                            .input-group-append
-                                span.qty-plus.input-group-text
-                                    i.fa.fa-plus 
-                        input(type="hidden", name="id", value="#{tea.id}")
-                        input(type="hidden", name="nonce", value="blahblah")
-                        button.btn.btn-primary(type="submit")
-                            i.fa.fa-cart-plus      
+                        div
+                            b Hours ? 
+                            span.qty-wrap                            
+                                span.qty-minus #[i.fa.fa-minus]
+                                input.qty(name="qty", type="text", value="1")                            
+                                span.qty-plus #[i.fa.fa-plus]
+                            input(type="hidden", name="TeacherId", value="#{tea.id}")
+                            input(type="hidden", name="Subject", value="#{Subject}")
+                            input(type="hidden", name="GradeLevel", value="#{GradeLevel}")
+                            input(type="hidden", name="Rate", value="#{Rate}")
+                            input(type='hidden', name='_csrf', value=_csrf)
+                            button.btn.btn-primary(type="submit")
+                                i.fa.fa-cart-plus      
 
  
 

@@ -35,6 +35,7 @@
     "express-handlebars": "^5.2.0",
     "express-session": "^1.17.1",
     "googleapis": "^67.0.0",
+    "helmet": "^4.6.0",
     "instagram-node": "^0.5.8",
     "jquery": "^3.6.0",
     "jsgrid": "^1.5.3",

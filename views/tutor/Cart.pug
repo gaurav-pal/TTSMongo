@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+    if(cart && cart.items.length > 0) 
+        form(action="/cart/update", method="post")
+            table.cart-table.table.table-bordered.table-striped
+                tbody 
+                    each product in cart.items
+                        tr 
+                            td 
+                                a(href="/cart/remove/#{product.id}")
+                                    i.fa.fa-remove.text-danger 
+                            td.product-thumb 
+                                img.img-thumbnail.img-responsive(src="/public/images/products/#{product.image}")
+                            td 
+                                #{product.title}
+                            td 
+                                #{product.formattedPrice}
+                            td 
+                                input.qty(type="text", name="qty[]", value="#{product.qty}")
+                                input(type="hidden", name="product_id[]", value="#{product.id}")
+                    
+                        tr.info 
+                            td.text-right(colspan="5") Total #{cart.formattedTotals}
+            .clearfix.cart-footer 
+                input(type='hidden', name='_csrf', value=_csrf)
+                button.btn.btn-default.pull-left(type="submit")
+                    i.fa.fa-refresh Update cart
+                a.btn.btn-default.pull-left(href="/cart/empty")
+                    i.fa.fa-remove Empty cart
+                a.btn.btn-default.pull-right(href="/checkout") Checkout #[i.fa.fa-angle-right]
+    else 
+        p.alert.alert-info Sorry, no products in your cart.
+

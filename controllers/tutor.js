@@ -38,14 +38,13 @@ exports.getSearch = (req, res) => {
 };
 
 exports.postSearch = (req, res, next) => {
-  // const validationErrors = [];
-  // if (validator.isEmpty(req.body.Subject)) validationErrors.push({ msg: 'Please select a subject.' });
-  // if (validator.isEmpty(req.body.GradeLevel)) validationErrors.push({ msg: 'Please select a grade level.' });
-
-  // if (validationErrors.length) {
-  //   req.flash('errors', validationErrors);
-  //   return res.redirect('tutor/search');
-  // }
+  if(!req.session.cart) {
+    req.session.cart = {
+        items: [],
+        totals: 0.00,
+        formattedTotals: ''
+    };
+  }  
   var TeachersList = [];
   UserGradeSubjectList.aggregate([
         {$match:{"Active": true , "IsTeacherDocument": true, "GradeLevel": req.body.GradeLevel, "Subject": req.body.Subject}},
@@ -81,7 +80,10 @@ exports.postSearch = (req, res, next) => {
     });
     res.render('tutor/TeacherListForSearch', {
       title: 'Teacher List For Search',
-      TeachersList : TeachersList
+      TeachersList : TeachersList,
+      GradeLevel: req.body.GradeLevel, 
+      Subject: req.body.Subject,
+
     });  
   });
 };
@@ -318,29 +320,7 @@ exports.DeleteStudentGradeSubject = (req, res) => {
   });
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//todo: chech for the functions, if we are using it.
 
 var getClientFilter = function(query) {
     var result = {
