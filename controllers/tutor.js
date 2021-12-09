@@ -74,9 +74,9 @@ exports.postSearch = (req, res, next) => {
             SubjectComment : x.Comments, 
             Picture: x.usr.profile.picture, 
             Gravatar: Grvtr};
-          for(i=0;i<5;i++){
+          //for(i=0;i<5;i++){
               TeachersList.push(display);
-      }                    
+      //}                    
     });
     res.render('tutor/TeacherListForSearch', {
       title: 'Teacher List For Search',
