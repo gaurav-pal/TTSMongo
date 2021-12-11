@@ -30,9 +30,9 @@ block content
                     .col-md-12.text-right #[b Total] #{cart.formattedTotals}
         .row.clearfix.cart-footer             
             .col-md-6.text-left
-                a.btn.btn-default.pull-left(href="/cart/empty") #[i.fa.fa-times.fa-lg] Empty cart
+                a.btn.btn-primary.pull-left(href="/cart/empty") #[i.fa.fa-times.fa-lg] Empty cart
             .col-md-6.text-right
-                a.btn.btn-default.pull-right(href="/checkout") Checkout #[i.fa.fa-angle-right.fa-lg]
+                a.btn.btn-primary.pull-right(href="/checkout") Checkout #[i.fa.fa-angle-right.fa-lg]
     else 
         p.alert.alert-info Sorry, nothing in your cart.
 

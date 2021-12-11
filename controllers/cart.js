@@ -58,24 +58,19 @@ exports.updateCart = (req, res) => {
 exports.getCheckout = (req, res) => {
     let sess = req.session;
     let cart = (typeof sess.cart !== 'undefined') ? sess.cart : false;
-    res.render('tutor/checkout', {
+    res.render('tutor/Checkout', {
         pageTitle: 'Checkout',
         cart: cart,
-        checkoutDone: false,
-        nonce: Security.md5(req.sessionID + req.headers['user-agent'])
+        checkoutDone: false
     });
 };
 
 exports.postCheckout = (req, res) => {
     let sess = req.session;
     let cart = (typeof sess.cart !== 'undefined') ? sess.cart : false;
-    if(Security.isValidNonce(req.body.nonce, req)) {
-        res.render('tutor/checkout', {
-            pageTitle: 'Checkout',
-            cart: cart,
-            checkoutDone: true
-        });
-    } else {
-        res.redirect('/');
-    }
+    res.render('tutor/Checkout', {
+        pageTitle: 'Checkout',
+        cart: cart,
+        checkoutDone: true
+    });
 };

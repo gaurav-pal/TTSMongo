@@ -34,15 +34,16 @@ block content
                             tbody 
                                 each product in cart.items 
                                     tr 
-                                        td #{product.title}
+                                        td #{product.Subject}
+                                        td #{product.GradeLevel}
                                         td #{product.formattedPrice} 
                                         td #{product.qty} 
                                 tr.info 
-                                    td.text-right(colspan="3")  Total: #{cart.formattedTotals}
+                                    td.text-right(colspan="4")  #[strong Total:] #{cart.formattedTotals}
                 .row 
-                    .col-md-10.col-md-offset-2
+                    .col-md-10.col-md-offset-2.text-center
                         .pull-left 
-                            img(src="/public/images/paypal.jpg",alt="")
+                            img(src="/images/paypal.jpg",alt="")
                         .pull-right.checkout-btn-wrap
                             input.btn.btn-primary.btn-lg(type="submit", value="Send")                            
                         input(type='hidden', name='_csrf', value=_csrf)
