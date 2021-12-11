@@ -183,7 +183,6 @@ app.get('/TutorSubjectDetail', tutorController.TutorSubjectDetail);
 app.get('/cart', cartController.gotoCart);
 app.post('/cart', cartController.postCart);
 app.post('/cart/update', cartController.updateCart);
-app.get('/cart/remove/:id', cartController.removeCart);
 app.get('/cart/empty', cartController.emptyCart);
 app.get('/checkout', cartController.getCheckout);
 app.post('/checkout', cartController.postCheckout);

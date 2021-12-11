@@ -7,27 +7,30 @@ block content
             | Continue with more subjects
     br
     if(cart && cart.items.length > 0)
-        table.cart-table.table.table-bordered.table-striped
-            tbody 
-                each product in cart.items
-                    form(action="/cart/update", method="post")
-                        .row
-                            .col-md-4
-                                img.img-thumbnail.img-responsive(src= product.Picture)
-                            .col-md-2 #{product.GradeLevel} #[br] #{product.Subject}
-                            .col-md-2 #{product.formattedPrice}
-                            .col-md-1 
-                                input.qty.form-control(type="text", name="qty[]", value= product.qty)
-                            .col-md-3
-                                input(type='hidden', name='_csrf', value=_csrf)
-                                .row 
-                                    .col-md-6.text-left
-                                        a.btn.btn-primary.btn-sm(href="/cart/update/#{product.TeacherId}") #[i.fas.fa-sync.fa-sm] Update
-                                    .col-md-6.text-right
-                                        a.btn.btn-primary.btn-sm(href="/cart/remove/#{product.TeacherId}") #[i.fas.fa-times-circle.fa-sm] Remove
-                        br
-                .row.info 
-                    .col-md-12.text-right #[b Total] #{cart.formattedTotals}
+        each product in cart.items
+            form(action="/cart/update", method="post")
+                .row
+                    .col-md-4
+                        img.img-thumbnail.img-responsive(src= product.Picture)
+                    .col-md-2 #{product.GradeLevel} #[br] #{product.Subject}
+                    .col-md-2 #{product.formattedPrice}
+                    .col-md-1 
+                        input.qty.form-control(type="text", name="qty", value= product.qty)
+                    .col-md-3
+                        input(type='hidden', name='_csrf', value=_csrf)
+                        input(type='hidden', name='TeacherId', value= product.TeacherId)
+                        input(type='hidden', name='GradeLevel', value= product.GradeLevel)
+                        input(type='hidden', name='Subject', value= product.Subject)
+                        input(type='hidden', name='Picture', value= product.Picture)
+                        input(type='hidden', name='Rate', value= product.Rate)
+                        .row 
+                            .col-md-6.text-left
+                                button.btn.btn-primary.btn-sm(type="submit",name="submit", value="Update") #[i.fas.fa-sync.fa-sm] Update
+                            .col-md-6.text-right
+                                button.btn.btn-primary.btn-sm(type="submit",name="submit", value="Remove") #[i.fas.fa-times-circle.fa-sm] Remove
+                br
+        .row.info 
+            .col-md-12.text-right #[b Total] #{cart.formattedTotals}
         .row.clearfix.cart-footer             
             .col-md-6.text-left
                 a.btn.btn-primary.pull-left(href="/cart/empty") #[i.fa.fa-times.fa-lg] Empty cart

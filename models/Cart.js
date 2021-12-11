@@ -17,39 +17,23 @@ class Cart {
         }
     }
 
-    static removeFromCart(id = 0, cart) {
+    static removeFromCart(TeacherId, Subject, GradeLevel, cart) {
         for(let i = 0; i < cart.items.length; i++) {
             let item = cart.items[i];
-            if(item.id === id) {
+            if(item.TeacherId === TeacherId && item.Subject === Subject && item.GradeLevel === GradeLevel) {
                 cart.items.splice(i, 1);
                 this.calculateTotals(cart);
             }
         }
     }
 
-    static updateCart(ids = [], qtys = [], cart) {
-        let map = [];
-        let updated = false;
-        ids.forEach(id => {
-           qtys.forEach(qty => {
-              map.push({
-                  id: parseInt(id, 10),
-                  qty: parseInt(qty, 10)
-              });
-           });
-        });
-        map.forEach(obj => {
-            cart.items.forEach(item => {
-               if(item.id === obj.id) {
-                   if(obj.qty > 0 && obj.qty !== item.qty) {
-                       item.qty = obj.qty;
-                       updated = true;
-                   }
-               }
-            });
-        });
-        if(updated) {
-            this.calculateTotals(cart);
+    static updateCart(TeacherId, Subject, GradeLevel, qty = 1, cart) {
+        for(let i = 0; i < cart.items.length; i++) {
+            let item = cart.items[i];
+            if(item.TeacherId === TeacherId && item.Subject === Subject && item.GradeLevel === GradeLevel) {
+                item.qty = qty;
+                this.calculateTotals(cart);
+            }
         }
     }
 

@@ -1,7 +1,5 @@
 const Cart = require('../models/Cart');
 
-const UserGradeSubjectList = require('../models/UserGradeSubjectList');
-
 exports.gotoCart = (req, res) => {
     let sess = req.session;
     let cart = (typeof sess.cart !== 'undefined') ? sess.cart : false;
@@ -9,16 +7,6 @@ exports.gotoCart = (req, res) => {
         pageTitle: 'Cart',
         cart: cart
     });
-};
-
-exports.removeCart = (req, res) => {
-   let id = req.params.id;
-   if(/^\d+$/.test(id) && Security.isValidNonce(req.params.nonce, req)) {
-       Cart.removeFromCart(parseInt(id, 10), req.session.cart);
-       res.redirect('tutor/Cart');
-   } else {
-       res.redirect('/');
-   }
 };
 
 exports.emptyCart = (req, res) => {
@@ -46,13 +34,26 @@ exports.postCart = (req, res) => {
 };
 
 exports.updateCart = (req, res) => {
-    let ids = req.body["product_id[]"];
-    let qtys = req.body["qty[]"];
+    let qty = parseInt(req.body.qty, 10);
+    let TeacherId = req.body.TeacherId;
+    let Subject = req.body.Subject;
+    let GradeLevel = req.body.GradeLevel;
+    let Picture = req.body.Picture;
+    let Rate = req.body.Rate;
+    let Action = req.body.submit;
+    
     let cart = (req.session.cart) ? req.session.cart : null;
-    let i = (!Array.isArray(ids)) ? [ids] : ids;
-    let q = (!Array.isArray(qtys)) ? [qtys] : qtys;
-    Cart.updateCart(i, q, cart);
-    res.redirect('/cart');
+    if(qty > 0 && Action == "Update"){
+        Cart.updateCart(TeacherId, Subject, GradeLevel, qty, cart);
+    }
+    else{
+        Cart.removeFromCart(TeacherId, Subject, GradeLevel, cart);
+    }
+    res.render('tutor/Cart', {
+        pageTitle: 'Cart',
+        cart: cart
+    });  
+    
 };
 
 exports.getCheckout = (req, res) => {
