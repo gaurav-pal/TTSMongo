@@ -44,7 +44,7 @@ exports.postSearch = (req, res, next) => {
         totals: 0.00,
         formattedTotals: ''
     };
-  }  
+  }
   var TeachersList = [];
   UserGradeSubjectList.aggregate([
         {$match:{"Active": true , "IsTeacherDocument": true, "GradeLevel": req.body.GradeLevel, "Subject": req.body.Subject}},
@@ -67,13 +67,14 @@ exports.postSearch = (req, res, next) => {
             Grvtr = `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
           }
           var display = {
+            Id: x.usr._id, 
             Name: x.usr.profile.name, 
             Rate: x.Rate, 
             Gender: x.usr.profile.gender, 
             About: x.prfs.About , 
             SubjectComment : x.Comments, 
-            Picture: x.usr.profile.picture, 
-            Gravatar: Grvtr};
+            Picture: x.usr.profile.picture ? x.usr.profile.picture : Grvtr
+            };
           //for(i=0;i<5;i++){
               TeachersList.push(display);
       //}                    

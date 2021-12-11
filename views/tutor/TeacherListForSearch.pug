@@ -27,10 +27,7 @@ block content
                     h3.text-center #[b #{tea.Name}]
                 .card-body
                     .text-center
-                        if tea.Picture
-                            img(src=tea.Picture)
-                        else
-                            img(src=tea.Gravatar)
+                        img(src=tea.Picture)
                     hr
                     .row 
                         .col-6.text-left
@@ -51,10 +48,11 @@ block content
                                 span.qty-minus #[i.fa.fa-minus]
                                 input.qty(name="qty", type="text", value="1")                            
                                 span.qty-plus #[i.fa.fa-plus]
-                            input(type="hidden", name="TeacherId", value="#{tea.id}")
-                            input(type="hidden", name="Subject", value="#{Subject}")
-                            input(type="hidden", name="GradeLevel", value="#{GradeLevel}")
-                            input(type="hidden", name="Rate", value="#{Rate}")
+                            input(type="hidden", name="TeacherId", value= tea.Id)
+                            input(type="hidden", name="Subject", value= Subject)
+                            input(type="hidden", name="GradeLevel", value= GradeLevel)
+                            input(type="hidden", name="Rate", value= tea.Rate)
+                            input(type="hidden", name="Picture", value= tea.Picture)
                             input(type='hidden', name='_csrf', value=_csrf)
                             button.btn.btn-primary(type="submit")
                                 i.fa.fa-cart-plus      

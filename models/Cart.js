@@ -1,10 +1,11 @@
 
 class Cart {
-    static addToCart(TeacherId, qty = 1, Subject, GradeLevel, Rate, cart) {
-        if(!this.inCart(TeacherId, Subject, GradeLevel, Rate, cart)) {
-            let format = new Intl.NumberFormat(process.env.LANG, {style: 'currency', currency: process.env.CURRENCY });
+    static addToCart(TeacherId, qty = 1, Subject, GradeLevel, Picture, Rate, cart) {
+        if(!this.inCart(TeacherId, Subject, GradeLevel, cart)) {
+            let format = new Intl.NumberFormat('en-US', {style: 'currency', currency: process.env.CURRENCY });
             let prod = {
               TeacherId: TeacherId,
+              Picture: Picture,
               Subject: Subject,
               Rate: Rate,
               qty: qty,
@@ -24,13 +25,11 @@ class Cart {
                 this.calculateTotals(cart);
             }
         }
-
     }
 
     static updateCart(ids = [], qtys = [], cart) {
         let map = [];
         let updated = false;
-
         ids.forEach(id => {
            qtys.forEach(qty => {
               map.push({
@@ -77,22 +76,18 @@ class Cart {
     }
 
    static emptyCart(request) {
-        
         if(request.session) {
             request.session.cart.items = [];
             request.session.cart.totals = 0.00;
             request.session.cart.formattedTotals = '';
         }
-
-
     }
 
     static setFormattedTotals(cart) {
-        let format = new Intl.NumberFormat(process.env.LANG, {style: 'currency', currency: process.env.CURRENCY });
+        let format = new Intl.NumberFormat('en-US', {style: 'currency', currency: process.env.CURRENCY });
         let totals = cart.totals;
         cart.formattedTotals = format.format(totals);
     }
-
 }
 
 module.exports = Cart;
