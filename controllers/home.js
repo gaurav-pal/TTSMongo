@@ -24,3 +24,9 @@ exports.PrivacyPolicies = (req, res) => {
     DateEffective: process.env.DATE_OF_START
   });
 };
+
+exports.getHelp = (req, res) => {
+  res.render('Help', {
+    title: 'Help'
+  });
+};

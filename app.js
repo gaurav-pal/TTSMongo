@@ -166,6 +166,7 @@ app.get('/signup', userController.getSignup);
 app.post('/signup', userController.postSignup);
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);
+app.get('/help', homeController.getHelp);
 app.get('/account/verify', passportConfig.isAuthenticated, userController.getVerifyEmail);
 app.get('/account/verify/:token', passportConfig.isAuthenticated, userController.getVerifyEmailToken);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
