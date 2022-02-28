@@ -59,10 +59,18 @@ exports.updateCart = (req, res) => {
 exports.getCheckout = (req, res) => {
     let sess = req.session;
     let cart = (typeof sess.cart !== 'undefined') ? sess.cart : false;
+    if (!(req.user)) {
+        const vErrors = [];
+        vErrors.push({ msg: 'Please Login Or Create Account.' });
+        req.flash('errors', vErrors);
+        return res.redirect('/login');
+    }
+
     res.render('tutor/Checkout', {
         pageTitle: 'Checkout',
         cart: cart,
-        checkoutDone: false
+        checkoutDone: false,
+        
     });
 };
 
