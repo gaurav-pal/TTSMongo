@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+    .card
+        .card-header.text-center
+            h1 Payment Cancellation
+        .card-body
+            h4 Sorry, if you cancel your payment by mistake, please go back to your selection and then checkout again. 
+            br 
+            .row
+                .col-md-1
+                .col-md-2
+                    a.btn.btn-primary.form-control(href='/cart')
+                        i.fa.fa-shopping-cart.go-to-cart-lnk.fa-sm
+                        | #[b Cart]
+                .col-md-1
+                .col-md-5
+                    p 
+                        b Or, if you want to change your selection of subjects.
+                .col-md-2
+                    a.btn.btn-primary.form-control(href="/search") 
+                        i.fab.fa-buffer.fa-sm
+                        | #[b Add Subjects]
+            br 

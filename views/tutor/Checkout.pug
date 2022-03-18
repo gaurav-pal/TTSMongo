@@ -3,34 +3,16 @@ extends ../layout
 block content
     if(!checkoutDone)
         if(cart && cart.items.length > 0)
-            form.form-horizontal(action="/checkout" method="post") 
-                //- .form-group 
-                //-     label.col-sm-2.control-label(for="first-name") First Name
-                //-     .col-sm-10
-                //-         input.form-control(type="text", name="firstname", id="first-name", placeholder="First Name")
-                //- .form-group 
-                //-     label.col-sm-2.control-label(for="last-name") Last Name
-                //-     .col-sm-10
-                //-         input.form-control(type="text", name="lastname", id="last-name", placeholder="Last Name")
-                //- .form-group 
-                //-     label.col-sm-2.control-label(for="email") E-mail
-                //-     .col-sm-10
-                //-         input.form-control(type="email", name="email", id="email", placeholder="E-mail")
-                //- .form-group 
-                //-     label.col-sm-2.control-label(for="address") Address
-                //-     .col-sm-10
-                //-         input.form-control(type="text", name="address", id="address", placeholder="Address")
-                //- .form-group 
-                //-     label.col-sm-2.control-label(for="city") City / Town
-                //-     .col-sm-10
-                //-         input.form-control(type="text", name="city", id="city", placeholder="City / Town")
-                //- .form-group 
-                //-     label.col-sm-2.control-label(for="zip") ZIP code
-                //-     .col-sm-10
-                //-         input.form-control(type="text", name="zip", id="zip", placeholder="ZIP code")
+            form.form-horizontal(action="/PayPalPay" method="post")                 
                 .row 
                     .col-md-10.col-md-offset-2
                         table.cart-table.table.table-bordered.table-striped
+                            theader                                
+                                tr 
+                                    td #[b Subject]
+                                    td #[b Level]
+                                    td #[b Price]
+                                    td #[b Quantity (Hrs)]
                             tbody 
                                 each product in cart.items 
                                     tr 
@@ -49,6 +31,5 @@ block content
                         input(type='hidden', name='_csrf', value=_csrf)
         else 
             p.alert.alert-info Sorry, Nothing in your cart.
-    else 
-        include paypal-form
+    
                     

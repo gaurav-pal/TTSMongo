@@ -20,6 +20,7 @@ const sass = require('node-sass-middleware');
 const multer = require('multer');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
+const paypal = require('paypal-rest-sdk');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -34,9 +35,6 @@ const upload = multer({
 });
 //const upload = multer({ dest: path.join(__dirname, 'uploads') });
 const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
-
-
-
 
 /**
  * Controllers (route handlers).
@@ -73,6 +71,12 @@ mongoose.connection.on('error', (err) => {
   console.error(err);
   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
   process.exit();
+});
+
+paypal.configure({
+  'mode': process.env.PAYPAL_MODE, 
+  'client_id': process.env.PAYPAL_ID,
+  'client_secret': process.env.PAYPAL_SECRET
 });
 
 /**
@@ -210,6 +214,15 @@ app.delete('/GetStudentGradeSubject', passportConfig.isAuthenticated, tutorContr
 //app.post('/Subject', tutorController.PostSubject);
 //app.put('/Subject', tutorController.PutSubject);
 // app.delete('/Subject', tutorController.DeleteSubject);
+
+/**
+ * Paypal routes
+ */
+app.post('/PayPalPay', cartController.PayPalPayment);
+app.get('/PayPalSuccess', cartController.PayPalSuccess);
+app.get('/PayPalCancel', cartController.PayPalCancel);
+
+
 
 /**
  * API examples routes.
